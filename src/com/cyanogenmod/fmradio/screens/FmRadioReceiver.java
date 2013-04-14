@@ -52,8 +52,8 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
 
     private FmReceiver.OnStartedListener mReceiverStartedListener; // The started listener is activated when the radio has started
 
-    private TextView mFrequencyTextView; // Displays the currently tuned frequency
-    private TextView mStationNameTextView; // Displays the current station name if there is adequate RDS data
+    private TextView mTvFrequency; // Displays the currently tuned frequency
+    private TextView mTvRDS; // Displays the current station name if there is adequate RDS data
 
     // Handle to the FM radio Band object
     private FmBand mFmBand;
@@ -136,7 +136,7 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
                     mInit = false;
                     try {
                         mFmReceiver.setFrequency(frequency[0]);
-                        mFrequencyTextView.setText(mStationList.get(0));
+                        mTvFrequency.setText(mStationList.get(0));
                     } catch (Exception e) {
                         Utils.debugFunc("onFullScan(). E.: " + e.getMessage(), Log.ERROR);
                         showToast(R.string.unable_to_set_frequency, Toast.LENGTH_LONG);
@@ -152,9 +152,9 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
 
                 String a = Double.toString((double) tunedFrequency / 1000);
                 if (mFmBand.getChannelOffset() == Constants.CHANNEL_OFFSET_50KHZ) {
-                    mFrequencyTextView.setText(String.format(a, "%.2f"));
+                    mTvFrequency.setText(String.format(a, "%.2f"));
                 } else {
-                    mFrequencyTextView.setText(String.format(a, "%.1f"));
+                    mTvFrequency.setText(String.format(a, "%.1f"));
                 }
                 mBtnSeekUp.setEnabled(true);
                 mBtnSeekDown.setEnabled(true);
@@ -166,7 +166,7 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
             public void onRDSDataFound(Bundle rdsData, int frequency) {
                 if (rdsData.containsKey("PSN")) {
                     Utils.debugFunc("onRDSDataFound(). PSN: " + rdsData.getString("PSN"), Log.INFO);
-                    mStationNameTextView.setText(rdsData.getString("PSN"));
+                    mTvRDS.setText(rdsData.getString("PSN"));
                 }
             }
         };
@@ -299,8 +299,8 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
     private void setupUI() {
         Utils.debugFunc("setupUI()", Log.INFO);
 
-        mFrequencyTextView = (TextView) findViewById(R.id.FrequencyTextView);
-        mStationNameTextView = (TextView) findViewById(R.id.tv_rds_text);
+        mTvFrequency = (TextView) findViewById(R.id.FrequencyTextView);
+        mTvRDS = (TextView) findViewById(R.id.tv_rds_text);
         mProgressScan = (ProgressBar) findViewById(R.id.scan_progressbar);
 
         mGalStationsList = (Gallery) findViewById(R.id.gal_stations_list);
@@ -519,9 +519,11 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
      * @param freq frequency to tune to
      */
     private void setFrequency(String freq) {
+        //clear RSD text
+        mTvRDS.setText("");
         try {
             mFmReceiver.setFrequency((int) (Double.valueOf(freq) * 1000));
-            mFrequencyTextView.setText(freq);
+            mTvFrequency.setText(freq);
         } catch (IOException e) {
             Utils.debugFunc("Set frequency failed! E.: " + e.getMessage(), Log.ERROR);
             showToast(R.string.unable_to_set_frequency, Toast.LENGTH_LONG);
