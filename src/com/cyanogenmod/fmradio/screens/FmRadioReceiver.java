@@ -40,27 +40,18 @@ import java.util.ArrayList;
 
 public class FmRadioReceiver extends Activity implements OnClickListener, AdapterView.OnItemClickListener {
 
+    private static final int BASE_OPTION_MENU = 0; // The base menu identifier
 
-    // The base menu identifier
-    private static final int BASE_OPTION_MENU = 0;
+    private static final int BAND_SELECTION_MENU = 1; // The band menu identifier
 
-    // The band menu identifier
-    private static final int BAND_SELECTION_MENU = 1;
+    private MediaPlayer mMediaPlayer; // Handle to the Media Player that plays the audio from the selected station
 
-    // Handle to the Media Player that plays the audio from the selected station
-    private MediaPlayer mMediaPlayer;
+    private FmReceiver.OnScanListener mReceiverScanListener; // The scan listener that receives the return values from the scans
 
-    // The scan listener that receives the return values from the scans
-    private FmReceiver.OnScanListener mReceiverScanListener;
+    private FmReceiver.OnRDSDataFoundListener mReceiverRdsDataFoundListener; // The listener that receives the RDS data from the current channel
 
-    // The listener that receives the RDS data from the current channel
-    private FmReceiver.OnRDSDataFoundListener mReceiverRdsDataFoundListener;
-
-    // The started listener is activated when the radio has started
-    private FmReceiver.OnStartedListener mReceiverStartedListener;
-
-    // Displays the currently tuned frequency
-    private TextView mFrequencyTextView;
+    private FmReceiver.OnStartedListener mReceiverStartedListener; // The started listener is activated when the radio has started
+    private TextView mFrequencyTextView; // Displays the currently tuned frequency
 
     // Displays the current station name if there is adequate RDS data
     private TextView mStationNameTextView;
@@ -466,6 +457,9 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
 
             case R.id.btn_seek_down:
                 Utils.debugFunc("SeekDown pressed", Log.INFO);
+                if (mFmReceiver.getState() == FmReceiver.STATE_IDLE) {
+                    turnRadioOn();
+                }
                 try {
                     v.setEnabled(false);
                     // stop current scan (if one is in progress)
@@ -480,6 +474,10 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
                 break;
 
             case R.id.btn_seek_up:
+                Utils.debugFunc("current state: " + mFmReceiver.getState(), Log.INFO);
+                if (mFmReceiver.getState() == FmReceiver.STATE_IDLE) {
+                    turnRadioOn();
+                }
                 Utils.debugFunc("SeekUp pressed", Log.INFO);
                 try {
                     v.setEnabled(false);
@@ -495,6 +493,9 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
                 break;
 
             case R.id.btn_fullscan:
+                if (mFmReceiver.getState() == FmReceiver.STATE_IDLE) {
+                    turnRadioOn();
+                }
                 Utils.debugFunc("Fullscan pressed", Log.INFO);
                 try {
                     mFmReceiver.startFullScan();
