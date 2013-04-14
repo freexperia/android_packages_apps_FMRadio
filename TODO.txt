@@ -8,6 +8,5 @@ To-Do list
 * Add Launcher Widget ?
 * Add Preferences
 * Add About
-* Implement earplugs onStart verification
 * Restore play after call
 * Implement ability to play trough device speakers

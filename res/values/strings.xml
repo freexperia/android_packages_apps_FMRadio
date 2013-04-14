@@ -20,6 +20,7 @@
     <string name="unable_to_start_radio">Unable to start the radio receiver.</string>
     <string name="unable_to_mediaplayer">Unable to start Android\'s MediaPlayer</string>
     <string name="mediaplayer_busy">MediaPlayer busy. Please wait and try again.</string>
+    <string name="earplugs_not_connected">Earplugs must be plugged in to use this application!</string>
 
     <!-- Preferences -->
     <string name="preferences">Preferences</string>

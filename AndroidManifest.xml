@@ -10,6 +10,7 @@
 
     <uses-permission android:name="com.stericsson.permission.FM_RADIO_TRANSMITTER"/>
     <uses-permission android:name="com.stericsson.permission.FM_RADIO_RECEIVER"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
     <application
             android:icon="@drawable/radio"
