@@ -10,3 +10,4 @@ To-Do list
 * Add About
 * Implement earplugs onStart verification
 * Restore play after call
+* Implement ability to play trough device speakers
