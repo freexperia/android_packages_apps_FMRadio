@@ -51,9 +51,12 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
     private FmReceiver.OnRDSDataFoundListener mReceiverRdsDataFoundListener; // The listener that receives the RDS data from the current channel
 
     private FmReceiver.OnStartedListener mReceiverStartedListener; // The started listener is activated when the radio has started
+    private FmReceiver.OnPlayingInStereoListener mOnPlayingInStereoListener;
 
     private TextView mTvFrequency; // Displays the currently tuned frequency
     private TextView mTvRDS; // Displays the current station name if there is adequate RDS data
+
+    private ImageView mIvStereo;
 
     // Handle to the FM radio Band object
     private FmBand mFmBand;
@@ -107,7 +110,11 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
     protected void onStart() {
         super.onStart();
         Utils.debugFunc("onStart", Log.DEBUG);
-        mReceiverScanListener = new com.stericsson.hardware.fm.FmReceiver.OnScanListener() {
+
+        /**
+         * ScanListener
+         */
+        mReceiverScanListener = new FmReceiver.OnScanListener() {
 
             // FullScan results
             public void onFullScan(int[] frequency, int[] signalStrength, boolean aborted) {
@@ -160,7 +167,11 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
                 mBtnSeekDown.setEnabled(true);
             }
         };
-        mReceiverRdsDataFoundListener = new com.stericsson.hardware.fm.FmReceiver.OnRDSDataFoundListener() {
+
+        /**
+         * RDS Listener
+         */
+        mReceiverRdsDataFoundListener = new FmReceiver.OnRDSDataFoundListener() {
 
             // Receives the current frequency's RDS Data
             public void onRDSDataFound(Bundle rdsData, int frequency) {
@@ -171,7 +182,10 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
             }
         };
 
-        mReceiverStartedListener = new com.stericsson.hardware.fm.FmReceiver.OnStartedListener() {
+        /**
+         * OnStart Listener
+         */
+        mReceiverStartedListener = new FmReceiver.OnStartedListener() {
 
             public void onStarted() {
                 Utils.debugFunc("onStarted()", Log.INFO);
@@ -185,9 +199,25 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
             }
         };
 
+        /**
+         * PlayingInStereo Listener
+         */
+        mOnPlayingInStereoListener = new FmReceiver.OnPlayingInStereoListener() {
+            @Override
+            public void onPlayingInStereo(boolean inStereo) {
+                //Utils.debugFunc("onPlayingInStereo(): "+inStereo, Log.INFO);
+                if (inStereo){
+                    mIvStereo.setImageResource(R.drawable.fm_stereo);
+                } else {
+                    mIvStereo.setImageResource(R.drawable.fm_mono);
+                }
+            }
+        };
+
         mFmReceiver.addOnScanListener(mReceiverScanListener);
         mFmReceiver.addOnRDSDataFoundListener(mReceiverRdsDataFoundListener);
         mFmReceiver.addOnStartedListener(mReceiverStartedListener);
+        mFmReceiver.addOnPlayingInStereoListener(mOnPlayingInStereoListener);
     }
 
 
@@ -316,6 +346,8 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
 
         mBtnFullScan = (ImageButton) findViewById(R.id.btn_fullscan);
         mBtnFullScan.setOnClickListener(this);
+
+        mIvStereo = (ImageView) findViewById(R.id.iv_playback_mode);
     }
 
     /**
