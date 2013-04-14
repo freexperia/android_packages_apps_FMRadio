@@ -16,6 +16,7 @@ public final class Constants {
     public static final String FM_RECEIVER_SERVICE = "fm_receiver";
 
     // PREFERENCES
-    public static final String PREFS_NAME = "Prefs";
     public static final String PREFS_SELECTED_BAND = "SELECTED_BAND";
+    public static final String PREFS_VERBOSE_LOGGING = "VERBOSE_LOGGING";
+    public static final String PREFS_NOTIFICATION_CONTROLS = "NOTIFICATION_CONTROLS";
 }
