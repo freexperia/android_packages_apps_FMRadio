@@ -54,7 +54,7 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
     private FmReceiver.OnPlayingInStereoListener mOnPlayingInStereoListener;
 
     private TextView mTvFrequency; // Displays the currently tuned frequency
-    private TextView mTvRDS; // Displays the current station name if there is adequate RDS data
+    private TextView mTvRDS_PSN, mTvRDS_RT; // Displays the current station name if there is adequate RDS data
 
     private ImageView mIvStereo;
 
@@ -175,9 +175,19 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
 
             // Receives the current frequency's RDS Data
             public void onRDSDataFound(Bundle rdsData, int frequency) {
+                String newPSN = "", newRT = "";
                 if (rdsData.containsKey("PSN")) {
-                    Utils.debugFunc("onRDSDataFound(). PSN: " + rdsData.getString("PSN"), Log.INFO);
-                    mTvRDS.setText(rdsData.getString("PSN"));
+                    newPSN = rdsData.getString("PSN");
+                }
+                if (rdsData.containsKey("RT")) {
+                    newRT = rdsData.getString("RT");
+                }
+                if (newPSN!=null && !newPSN.trim().isEmpty()){
+                    if (newRT!=null && !newRT.trim().isEmpty()){
+                        newPSN = newPSN+" - ";
+                        mTvRDS_RT.setText(newRT.trim());
+                    }
+                    mTvRDS_PSN.setText(newPSN.trim());
                 }
             }
         };
@@ -330,7 +340,8 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
         Utils.debugFunc("setupUI()", Log.INFO);
 
         mTvFrequency = (TextView) findViewById(R.id.FrequencyTextView);
-        mTvRDS = (TextView) findViewById(R.id.tv_rds_text);
+        mTvRDS_PSN = (TextView) findViewById(R.id.tv_ps_text);
+        mTvRDS_RT = (TextView) findViewById(R.id.tv_rds_text);
         mProgressScan = (ProgressBar) findViewById(R.id.scan_progressbar);
 
         mGalStationsList = (Gallery) findViewById(R.id.gal_stations_list);
@@ -552,7 +563,8 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
      */
     private void setFrequency(String freq) {
         //clear RSD text
-        mTvRDS.setText("");
+        mTvRDS_PSN.setText("");
+        mTvRDS_RT.setText("");
         try {
             mFmReceiver.setFrequency((int) (Double.valueOf(freq) * 1000));
             mTvFrequency.setText(freq);
