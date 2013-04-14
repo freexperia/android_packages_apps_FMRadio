@@ -58,4 +58,20 @@ public final class Prefs {
         editor.commit();
     }
 
+
+    /**
+     * @return True if this the first time the application executes, else otherwise
+     */
+    public static boolean getIsFirstTime(Context ctx) {
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ctx);
+            return settings.getBoolean(Constants.PREFS_IS_FIRST_TIME, true);
+        }
+
+        public static void setIsFirstTime(Context ctx, boolean newValue) {
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ctx);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean(Constants.PREFS_IS_FIRST_TIME, newValue);
+            editor.commit();
+        }
+
 }
