@@ -239,6 +239,7 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
             mFmReceiver.removeOnScanListener(mReceiverScanListener);
             mFmReceiver.removeOnRDSDataFoundListener(mReceiverRdsDataFoundListener);
             mFmReceiver.removeOnStartedListener(mReceiverStartedListener);
+            mFmReceiver.removeOnPlayingInStereoListener(mOnPlayingInStereoListener);
         }
     }
 
