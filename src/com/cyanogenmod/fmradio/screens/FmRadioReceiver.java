@@ -51,8 +51,8 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
     private FmReceiver.OnRDSDataFoundListener mReceiverRdsDataFoundListener; // The listener that receives the RDS data from the current channel
 
     private FmReceiver.OnStartedListener mReceiverStartedListener; // The started listener is activated when the radio has started
-    private TextView mFrequencyTextView; // Displays the currently tuned frequency
 
+    private TextView mFrequencyTextView; // Displays the currently tuned frequency
     private TextView mStationNameTextView; // Displays the current station name if there is adequate RDS data
 
     // Handle to the FM radio Band object
@@ -66,18 +66,12 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
     // errors
     private boolean mPauseMutex = false;
 
-    private boolean mRestart = false;
-
 
     // The menu items
     public static final int FM_BAND = Menu.FIRST;
-
     public static final int BAND_US = Menu.FIRST + 1;
-
     public static final int BAND_EU = Menu.FIRST + 2;
-
     public static final int BAND_JAPAN = Menu.FIRST + 3;
-
     public static final int BAND_CHINA = Menu.FIRST + 4;
 
 
@@ -194,29 +188,13 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
         mFmReceiver.addOnScanListener(mReceiverScanListener);
         mFmReceiver.addOnRDSDataFoundListener(mReceiverRdsDataFoundListener);
         mFmReceiver.addOnStartedListener(mReceiverStartedListener);
-
-        if (mRestart) {
-            turnRadioOn();
-        }
-        mRestart = false;
     }
 
-    /**
-     * Stops the FM Radio listeners
-     */
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        mRestart = true;
-    }
 
-    /**
-     * Stops the FM Radio listeners
-     */
     @Override
     protected void onStop() {
         super.onStop();
-
+        // Stops the FM Radio listeners
         if (mFmReceiver != null) {
             mFmReceiver.removeOnScanListener(mReceiverScanListener);
             mFmReceiver.removeOnRDSDataFoundListener(mReceiverRdsDataFoundListener);
@@ -224,9 +202,7 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
         }
     }
 
-    /**
-     *
-     */
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
