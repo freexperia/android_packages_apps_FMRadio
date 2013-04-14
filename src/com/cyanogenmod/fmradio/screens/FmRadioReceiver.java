@@ -17,7 +17,6 @@
 package com.cyanogenmod.fmradio.screens;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +29,7 @@ import android.widget.*;
 import com.cyanogenmod.fmradio.R;
 import com.cyanogenmod.fmradio.adapters.StationsAdapter;
 import com.cyanogenmod.fmradio.utils.Constants;
+import com.cyanogenmod.fmradio.utils.Prefs;
 import com.cyanogenmod.fmradio.utils.Utils;
 import com.stericsson.hardware.fm.FmBand;
 import com.stericsson.hardware.fm.FmReceiver;
@@ -73,9 +73,6 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
     private boolean mPauseMutex = false;
 
 
-    // The name of the storage string
-    public static final String PREFS_NAME = "FMRadioPrefsFile";
-
     // The menu items
     public static final int FM_BAND = Menu.FIRST;
 
@@ -99,11 +96,7 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
 
     private ArrayList<String> mStationList;
 
-    /**
-     * Required method from parent class
-     *
-     * @param icicle - The previous instance of this app
-     */
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -111,8 +104,7 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
         mFmReceiver = (FmReceiver) getSystemService("fm_receiver"); //MOCK: new FakeFmReceiver();
         // USE Mock class if you don't have access to device with an FM Chip
         // (get mock framework from: https://github.com/pedronveloso/fm_mock_framework
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        mSelectedBand = settings.getInt("selectedBand", 1);
+        mSelectedBand = Prefs.getPreferredBand(this);
         mFmBand = new FmBand(mSelectedBand);
         setupButtons();
     }
@@ -235,16 +227,14 @@ public class FmRadioReceiver extends Activity implements OnClickListener, Adapte
     }
 
     /**
-     * Saves the FmBand for next time the program is used and closes the radio
-     * and media player.
+     *
      */
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putInt("selectedBand", mSelectedBand);
-        editor.commit();
+        //Saves the FmBand for next time the program is used and closes the radio
+        // and media player.
+        Prefs.setPreferredBand(this, mSelectedBand);
         try {
             mFmReceiver.reset();
         } catch (IOException e) {
